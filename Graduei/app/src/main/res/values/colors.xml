@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ActionBar colors-->
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#E65100</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="textColorPrimary">#f67c00</color>
+
+    <!-- App colors-->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>
