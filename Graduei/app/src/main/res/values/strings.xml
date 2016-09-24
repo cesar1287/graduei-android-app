@@ -2,4 +2,15 @@
     <string name="app_name">Graduei</string>
 
     <string name="action_bar_title">GRADUEI</string>
+    <string name="title_activity_main">GRADUEI</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="drawer_menu">Menu</string>
+    <string name="drawer_menu_account">Meus dados</string>
+    <string name="drawer_menu_pictures">Fotos</string>
+    <string name="drawer_menu_logout">Sair</string>
 </resources>
