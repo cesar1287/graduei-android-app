@@ -1,7 +1,9 @@
-package com.rivastecnologia.graduei;
+package com.rivastecnologia.graduei.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.rivastecnologia.graduei.R;
 
 public class PicturesActivity extends AppCompatActivity {
 

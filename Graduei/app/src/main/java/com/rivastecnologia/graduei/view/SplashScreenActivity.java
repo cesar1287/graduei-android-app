@@ -1,9 +1,12 @@
-package com.rivastecnologia.graduei;
+package com.rivastecnologia.graduei.view;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.rivastecnologia.graduei.R;
+import com.rivastecnologia.graduei.view.MainActivity;
 
 public class SplashScreenActivity extends AppCompatActivity implements Runnable{
 

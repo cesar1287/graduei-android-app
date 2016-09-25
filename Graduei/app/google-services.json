@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1086222149025",
+    "project_id": "graduei-144413"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086222149025:android:5844f3fa9b70b3be",
+        "android_client_info": {
+          "package_name": "com.rivastecnologia.graduei"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086222149025-o7gb5cjgdqgpjjes7o3u5ohuut8h7ara.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rivastecnologia.graduei",
+            "certificate_hash": "9A4E15D6D18783E267C34E8DB9C3C9CFDC75CBD1"
+          }
+        },
+        {
+          "client_id": "1086222149025-nppb5qmu6o9vjkunbscq03v98a19fmvk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuWqC-bFzn1UrztViPalgqvzj8U7NF0kY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
