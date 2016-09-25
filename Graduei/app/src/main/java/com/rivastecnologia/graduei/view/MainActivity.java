@@ -32,7 +32,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.rivastecnologia.graduei.R;
-import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener{
@@ -44,14 +43,11 @@ public class MainActivity extends AppCompatActivity
     Bundle infosFacebook;
     Bundle infosGoogle;
     String nome, email, id, profilePic;
-    ImageView imagePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-
-        imagePic = (ImageView) findViewById(R.id.imageView1);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.PLUS_LOGIN))
@@ -134,7 +130,17 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_account) {
-            startActivity(new Intent(this, AccountActivity.class));
+            if(infosFacebook!=null) {
+                Intent irParaATelaMeusDados = new Intent(this, AccountActivity.class);
+                irParaATelaMeusDados.putExtra("infosFacebook", infosFacebook);
+                startActivity(irParaATelaMeusDados);
+                finish();
+            }else{
+                Intent irParaATelaMeusDados = new Intent(this, AccountActivity.class);
+                irParaATelaMeusDados.putExtra("infosGoogle", infosGoogle);
+                startActivity(irParaATelaMeusDados);
+                finish();
+            }
         } else if (id == R.id.nav_pictures) {
             startActivity(new Intent(this, PicturesActivity.class));
         } else if (id == R.id.nav_logout) {
