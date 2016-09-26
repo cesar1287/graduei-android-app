@@ -134,12 +134,10 @@ public class MainActivity extends AppCompatActivity
                 Intent irParaATelaMeusDados = new Intent(this, AccountActivity.class);
                 irParaATelaMeusDados.putExtra("infosFacebook", infosFacebook);
                 startActivity(irParaATelaMeusDados);
-                finish();
             }else{
                 Intent irParaATelaMeusDados = new Intent(this, AccountActivity.class);
                 irParaATelaMeusDados.putExtra("infosGoogle", infosGoogle);
                 startActivity(irParaATelaMeusDados);
-                finish();
             }
         } else if (id == R.id.nav_pictures) {
             startActivity(new Intent(this, PicturesActivity.class));
