@@ -15,13 +15,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -32,6 +34,14 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.rivastecnologia.graduei.R;
+import com.rivastecnologia.graduei.controller.domain.User;
+import com.rivastecnologia.graduei.model.GradueiDAO;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener{
@@ -62,30 +72,15 @@ public class MainActivity extends AppCompatActivity
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
 
         if(AccessToken.getCurrentAccessToken()!=null){
-            //processLoginFacebook(AccessToken.getCurrentAccessToken());
+            Log.d(TAG, "Got cached sign-in facebook");
+            processLoginFacebook(AccessToken.getCurrentAccessToken());
         }else if (opr.isDone()) {
-            //Log.d(TAG, "Got cached sign-in");
-            //GoogleSignInResult result = opr.get();
-            //handleSignInResult(result);
+            Log.d(TAG, "Got cached sign-in google");
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
         }else{
             startActivity(new Intent(this,LoginActivity.class));
             finish();
-        }
-
-        infosFacebook = getIntent().getBundleExtra("infosFacebook");
-        if(infosFacebook!=null) {
-            nome = infosFacebook.get("name").toString();
-            email = infosFacebook.get("email").toString();
-            id = infosFacebook.get("idFacebook").toString();
-            profilePic = infosFacebook.get("profile_pic").toString();
-        }
-
-        infosGoogle= getIntent().getBundleExtra("infosGoogle");
-        if(infosGoogle!=null) {
-            nome = infosGoogle.get("name").toString();
-            email = infosGoogle.get("email").toString();
-            id = infosGoogle.get("id").toString();
-            profilePic = infosGoogle.get("profile_pic").toString();
         }
 
         setContentView(R.layout.activity_main);
@@ -190,5 +185,98 @@ public class MainActivity extends AppCompatActivity
                         //nothing to do
                     }
                 });
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            processLoginGoogle(acct);
+        }
+    }
+
+    private Bundle getGoogleData(GoogleSignInAccount account) {
+
+        Bundle bundle = new Bundle();
+
+        bundle.putString("profile_pic", account.getPhotoUrl().toString());
+        bundle.putString("name", account.getDisplayName());
+        bundle.putString("id", account.getId());
+        bundle.putString("email", account.getEmail());
+
+        return bundle;
+    }
+
+    private void processLoginGoogle(GoogleSignInAccount account){
+
+        infosGoogle = getGoogleData(account);
+
+        User user = new User();
+        GradueiDAO dao = new GradueiDAO(this);
+        user.setId(infosGoogle.get("id").toString());
+        if(!dao.isUserCreated(user.getId())){
+            user.setEmail(infosGoogle.get("email").toString());
+            user.setNome(infosGoogle.get("name").toString());
+            user.setProfilePicURL(infosGoogle.get("profile_pic").toString());
+            dao.insert(user);
+            dao.close();
+        }
+    }
+
+    private void processLoginFacebook(AccessToken token){
+
+        GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
+
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                // Get facebook data from login
+                infosFacebook = getFacebookData(object);
+
+                User user = new User();
+                GradueiDAO dao = new GradueiDAO(MainActivity.this);
+                user.setId(infosFacebook.get("id").toString());
+                if(!dao.isUserCreated(user.getId())){
+                    user.setEmail(infosFacebook.get("email").toString());
+                    user.setNome(infosFacebook.get("name").toString());
+                    user.setProfilePicURL(infosFacebook.get("profile_pic").toString());
+                    dao.insert(user);
+                    dao.close();
+                }
+            }
+
+        });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, name, email"); // Parâmetros que pedimos ao facebook
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private Bundle getFacebookData(JSONObject object) {
+
+        Bundle bundle = new Bundle();
+
+        try {
+            String id = object.getString("id");
+
+            try {
+                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
+                bundle.putString("profile_pic", profile_pic.toString());
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            bundle.putString("id", id);
+            if (object.has("name")) {
+                bundle.putString("name", object.getString("name"));
+            }if (object.has("email")) {
+                bundle.putString("email", object.getString("email"));
+            }
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        return bundle;
     }
 }

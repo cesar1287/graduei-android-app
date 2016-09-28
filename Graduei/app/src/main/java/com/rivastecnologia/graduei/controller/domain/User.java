@@ -2,7 +2,20 @@ package com.rivastecnologia.graduei.controller.domain;
 
 public class User {
 
-    private String id, nome, email, telefone, senha;
+    private String id;
+    private String nome;
+    private String email;
+    private String telefone;
+    private String senha;
+    private String profilePicURL;
+
+    public String getProfilePicURL() {
+        return profilePicURL;
+    }
+
+    public void setProfilePicURL(String profilePicURL) {
+        this.profilePicURL = profilePicURL;
+    }
 
     public String getId() {
         return id;

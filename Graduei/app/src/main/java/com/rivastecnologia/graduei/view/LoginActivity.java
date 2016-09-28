@@ -1,6 +1,5 @@
 package com.rivastecnologia.graduei.view;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,13 +11,10 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -28,19 +24,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.rivastecnologia.graduei.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
 
     CallbackManager callbackManager;
-
-    private Bundle bFacebookData;
-    private Bundle bGoogleData;
 
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -60,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                processLoginFacebook(loginResult);
+                processLogin();
             }
 
             @Override
@@ -139,8 +127,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            processLoginGoogle(acct);
+            processLogin();
         }
     }
     // [END handleSignInResult]
@@ -152,77 +139,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
     // [END signIn]
 
-    private Bundle getFacebookData(JSONObject object) {
 
-        Bundle bundle = new Bundle();
+    private void processLogin(){
 
-        try {
-            String id = object.getString("id");
-
-            try {
-                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
-                bundle.putString("profile_pic", profile_pic.toString());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            bundle.putString("idFacebook", id);
-            if (object.has("name")) {
-                bundle.putString("name", object.getString("name"));
-            }if (object.has("email")) {
-                bundle.putString("email", object.getString("email"));
-            }
-        }catch(JSONException e){
-            e.printStackTrace();
-        }
-        return bundle;
-    }
-
-    private void processLoginFacebook(LoginResult loginResult){
-
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
-        progressDialog.setMessage("Processando dados...");
-        progressDialog.show();
-
-        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                // Get facebook data from login
-                bFacebookData = getFacebookData(object);
-
-                progressDialog.dismiss();
-                Intent irParaATelaPrincipal = new Intent(LoginActivity.this, MainActivity.class);
-                irParaATelaPrincipal.putExtra("infosFacebook", bFacebookData);
-                startActivity(irParaATelaPrincipal);
-                finish();
-            }
-        });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name, email"); // Parâmetros que pedimos ao facebook
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    private Bundle getGoogleData(GoogleSignInAccount account) {
-
-        Bundle bundle = new Bundle();
-
-        bundle.putString("profile_pic", account.getPhotoUrl().toString());
-        bundle.putString("name", account.getDisplayName());
-        bundle.putString("id", account.getId());
-        bundle.putString("email", account.getEmail());
-
-        return bundle;
-    }
-
-    private void processLoginGoogle(GoogleSignInAccount account){
-
-        bGoogleData = getGoogleData(account);
-        Intent irParaATelaPrincipal = new Intent(LoginActivity.this, MainActivity.class);
-        irParaATelaPrincipal.putExtra("infosGoogle", bGoogleData);
+        startActivity(new Intent(this, MainActivity.class));
         finish();
-        startActivity(irParaATelaPrincipal);
     }
 }
