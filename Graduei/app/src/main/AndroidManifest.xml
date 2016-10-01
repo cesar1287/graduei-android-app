@@ -40,7 +40,8 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             tools:replace="android:theme" />
-        <activity android:name=".view.VisualizationActivity"></activity>
+        <activity android:name=".view.VisualizationActivity"
+            android:parentActivityName=".view.PicturesActivity" />
     </application>
 
 </manifest>

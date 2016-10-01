@@ -3,6 +3,7 @@ package com.rivastecnologia.graduei.view;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,11 +45,15 @@ public class PicturesActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     int position, long arg3) {
-                if (null != images && !images.isEmpty());
+                if (null != images && !images.isEmpty()) {
                     /*Toast.makeText(
                             getApplicationContext(),
                             "position " + position + " " + images.get(position),
                             Toast.LENGTH_SHORT).show();*/
+                    Intent intent = new Intent(PicturesActivity.this, VisualizationActivity.class);
+                    intent.putExtra("foto", images.get(position));
+                    startActivity(intent);
+                }
             }
         });
 
