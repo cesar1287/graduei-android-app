@@ -13,22 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <Button
-            android:id="@+id/btLoadPictures"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/orange"
-            android:text="@string/activity_main_load_pictures"
-            android:textColor="@color/black"
-            android:layout_gravity="center"
-            android:layout_marginRight="40dp"
-            android:layout_marginLeft="40dp"/>
-    </LinearLayout>
-
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

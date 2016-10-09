@@ -4,12 +4,15 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.MediaColumns;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,6 +20,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -29,12 +33,18 @@ public class PicturesActivity extends AppCompatActivity {
 
     /** The images. */
     private ArrayList<String> images;
+    GridView gallery;
+    String pic;
+
+    private static final String PREF_NAME = "LoginActivityPreferences";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pictures);
 
-        GridView gallery = (GridView) findViewById(R.id.galleryGridView);
+        gallery = (GridView) findViewById(R.id.galleryGridView);
+        registerForContextMenu(gallery);
 
         gallery.setAdapter(new ImageAdapter(this));
 
@@ -55,7 +65,68 @@ public class PicturesActivity extends AppCompatActivity {
             }
         });
 
+        gallery.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                pic = images.get(position);
+                return false;
+            }
+        });
+
         getSupportActionBar().setTitle("Fotos");
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+            SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+            final SharedPreferences.Editor editor = sp.edit();
+
+            final MenuItem careta = menu.add("Marcar como \"CARETA\"");
+            careta.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                editor.putString("careta", pic);
+                editor.apply();
+                Toast.makeText(PicturesActivity.this, "Foto marcada com sucesso", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+
+        final MenuItem direito = menu.add("Marcar como \"PERFIL DIREITO\"");
+        direito.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                editor.putString("direito", pic);
+                editor.apply();
+                Toast.makeText(PicturesActivity.this, "Foto marcada com sucesso", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+
+        final MenuItem frontal = menu.add("Marcar como \"FRONTAL\"");
+        frontal.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                editor.putString("frontal", pic);
+                editor.apply();
+                Toast.makeText(PicturesActivity.this, "Foto marcada com sucesso", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+
+        final MenuItem esquerdo = menu.add("Marcar como \"PERFIL ESQUERDO\"");
+        esquerdo.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                editor.putString("esquerdo", pic);
+                editor.apply();
+                Toast.makeText(PicturesActivity.this, "Foto marcada com sucesso", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+
     }
 
     /**

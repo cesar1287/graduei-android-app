@@ -19,7 +19,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity
 
     Bundle infosFacebook;
     Bundle infosGoogle;
-    String nome, email, id, profilePic;
+    String nome, email, id, profilePic, frontal, careta, perfil_direito, perfil_esquerdo;
     int executado;
     private static final String PREF_NAME = "LoginActivityPreferences";
 
@@ -101,6 +100,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -114,14 +114,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        Button btPictures = (Button) findViewById(R.id.btLoadPictures);
-        btPictures.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Carregando fotos", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         executado = sp.getInt("execucao",-1);
@@ -182,6 +174,42 @@ public class MainActivity extends AppCompatActivity
         nav_nome.setText(nome);
         TextView nav_email = (TextView)hView.findViewById(R.id.header_email);
         nav_email.setText(email);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+
+        frontal = sp.getString("frontal","falhou");
+        perfil_direito = sp.getString("direito","falhou");
+        careta = sp.getString("careta","falhou");
+        perfil_esquerdo = sp.getString("esquerdo","falhou");
+
+        ImageView iv_frontal = (ImageView) findViewById(R.id.frontal);
+        Glide.with(iv_frontal.getContext())
+                .load(frontal)
+                .placeholder(R.drawable.logo)
+                .into(iv_frontal);
+
+        ImageView iv_direito = (ImageView) findViewById(R.id.perfil_direito);
+        Glide.with(this)
+                .load(perfil_direito)
+                .placeholder(R.drawable.logo)
+                .into(iv_direito);
+
+        ImageView iv_careta = (ImageView) findViewById(R.id.careta);
+        Glide.with(this)
+                .load(careta)
+                .placeholder(R.drawable.logo)
+                .into(iv_careta);
+
+        ImageView iv_esquerdo = (ImageView) findViewById(R.id.perfil_esquerdo);
+        Glide.with(this)
+                .load(perfil_esquerdo)
+                .placeholder(R.drawable.logo)
+                .into(iv_esquerdo);
     }
 
     @Override

@@ -23,4 +23,8 @@
     <string name="activity_main_load_pictures">Carregar fotos</string>
 
     <string name="pref_first_launch_key">first-launch</string>
+    <string name="careta">CARETA</string>
+    <string name="perfil_direito">PERFIL DIREITO</string>
+    <string name="frontal">FRONTAL</string>
+    <string name="perfil_esquerdo">PERFIL ESQUERDO</string>
 </resources>
