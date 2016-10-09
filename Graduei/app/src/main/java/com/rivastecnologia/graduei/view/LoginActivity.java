@@ -1,20 +1,25 @@
 package com.rivastecnologia.graduei.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -23,7 +28,13 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.rivastecnologia.graduei.R;
+import com.rivastecnologia.graduei.model.GradueiDAO;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
@@ -35,6 +46,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private GoogleApiClient mGoogleApiClient;
 
+    private static final String PREF_NAME = "LoginActivityPreferences";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +56,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_login);
 
         callbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Collections.singletonList("email"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                processLogin();
+                processLoginFacebook(loginResult.getAccessToken());
             }
 
             @Override
@@ -127,7 +140,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-            processLogin();
+            GoogleSignInAccount acc = result.getSignInAccount();
+            processLoginGoogle(acc);
         }
     }
     // [END handleSignInResult]
@@ -139,10 +153,88 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
     // [END signIn]
 
+    private Bundle getGoogleData(GoogleSignInAccount account) {
 
-    private void processLogin(){
+        Bundle bundle = new Bundle();
 
-        startActivity(new Intent(this, MainActivity.class));
+        bundle.putString("profile_pic", account.getPhotoUrl().toString());
+        bundle.putString("name", account.getDisplayName());
+        bundle.putString("id", account.getId());
+        bundle.putString("email", account.getEmail());
+
+        return bundle;
+    }
+
+    private void processLoginGoogle(GoogleSignInAccount account){
+
+        Bundle infosGoogle = getGoogleData(account);
+
+        SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.putString("nome", infosGoogle.getString("name"));
+        editor.putString("email", infosGoogle.getString("email"));
+        editor.putString("profile_pic", infosGoogle.getString("profile_pic"));
+        editor.apply();
+
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
+
+    }
+
+    private void processLoginFacebook(AccessToken token){
+
+        GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
+
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                // Get facebook data from login
+                Bundle infosFacebook = getFacebookData(object);
+
+                SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+
+                editor.putString("nome", infosFacebook.getString("name"));
+                editor.putString("email", infosFacebook.getString("email"));
+                editor.putString("profile_pic", infosFacebook.getString("profile_pic"));
+                editor.apply();
+
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
+            }
+
+        });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, name, email"); // Parâmetros que pedimos ao facebook
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private Bundle getFacebookData(JSONObject object) {
+
+        Bundle bundle = new Bundle();
+
+        try {
+            String id = object.getString("id");
+
+            try {
+                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
+                bundle.putString("profile_pic", profile_pic.toString());
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            bundle.putString("id", id);
+            if (object.has("name")) {
+                bundle.putString("name", object.getString("name"));
+            }if (object.has("email")) {
+                bundle.putString("email", object.getString("email"));
+            }
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        return bundle;
     }
 }

@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.rivastecnologia.graduei.R;
 import com.rivastecnologia.graduei.controller.domain.User;
 import com.rivastecnologia.graduei.model.GradueiDAO;
-import com.squareup.picasso.Picasso;
 
 public class AccountActivity extends AppCompatActivity {
 

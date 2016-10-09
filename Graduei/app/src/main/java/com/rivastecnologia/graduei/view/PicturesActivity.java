@@ -17,12 +17,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import com.rivastecnologia.graduei.R;
-import com.squareup.picasso.Picasso;
 
 /**
  * The Class GallarySample.
