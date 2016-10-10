@@ -1,8 +1,12 @@
 package com.rivastecnologia.graduei.view;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,6 +15,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.MediaColumns;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +30,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import com.rivastecnologia.graduei.R;
+import com.yalantis.ucrop.UCrop;
+
+import static android.R.attr.maxHeight;
+import static android.R.attr.maxWidth;
 
 /**
  * The Class GallarySample.
@@ -127,6 +136,36 @@ public class PicturesActivity extends AppCompatActivity {
             }
         });
 
+        MenuItem deletar = menu.add("Deletar imagem");
+        deletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                getContentResolver().delete(Uri.fromFile(new File(pic)), null, null);
+                Toast.makeText(PicturesActivity.this, "Foto deletada com sucesso", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+
+        MenuItem recortar = menu.add("Recortar Imagem");
+        recortar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                UCrop.of(Uri.fromFile(new File(pic)), Uri.fromFile(new File(pic)))
+                        .withAspectRatio(16, 9)
+                        .withMaxResultSize(maxWidth, maxHeight)
+                        .start(PicturesActivity.this);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            final Uri resultUri = UCrop.getOutput(data);
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+        }
     }
 
     /**
