@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(irParaATelaMeusDados);
             }
         } else if (id == R.id.nav_pictures) {
-            startActivity(new Intent(this, PicturesActivity.class));
+            startActivity(new Intent(this, PictureActivity.class));
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
