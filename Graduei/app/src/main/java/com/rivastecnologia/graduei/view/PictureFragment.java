@@ -371,7 +371,6 @@ public class PictureFragment extends Fragment {
     }
 
     public void allScan() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent mediaScanIntent = new Intent(
                     Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -401,7 +400,7 @@ public class PictureFragment extends Fragment {
                     Images.Media._ID};
             final String orderBy = Images.Media._ID;
 
-            Cursor imagecursor = getActivity().managedQuery(
+            Cursor imagecursor = getActivity().getContentResolver().query(
                     Images.Media.EXTERNAL_CONTENT_URI, columns,
                     null, null, orderBy);
 
@@ -412,8 +411,10 @@ public class PictureFragment extends Fragment {
                             .getColumnIndex(Images.Media.DATA);
                     items.add(new ImageItem(R.drawable.logo, imagecursor.getString(dataColumnIndex)));
                 }
-//                Log.d("items : "+items.size());
+                //Log.i("teste","items : "+items.size());
             }
+
+            imagecursor.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
