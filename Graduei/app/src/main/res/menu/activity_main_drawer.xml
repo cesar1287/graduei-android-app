@@ -12,6 +12,10 @@
                 android:icon="@drawable/ic_camera_white_18dp"
                 android:title="@string/drawer_menu_pictures" />
             <item
+                android:id="@+id/nav_pictures_found"
+                android:icon="@drawable/ic_folder_multiple_image_white_18dp"
+                android:title="@string/drawer_menu_pictures_found" />
+            <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_logout_white_18dp"
                 android:title="@string/drawer_menu_logout" />

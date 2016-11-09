@@ -27,4 +27,5 @@
     <string name="perfil_direito">PERFIL DIREITO</string>
     <string name="frontal">FRONTAL</string>
     <string name="perfil_esquerdo">PERFIL ESQUERDO</string>
+    <string name="drawer_menu_pictures_found">Fotos Encontradas</string>
 </resources>
