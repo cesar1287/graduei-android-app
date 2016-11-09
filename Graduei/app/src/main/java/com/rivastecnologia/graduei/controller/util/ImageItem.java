@@ -1,6 +1,8 @@
 package com.rivastecnologia.graduei.controller.util;
 
-public class ImageItem {
+import java.io.Serializable;
+
+public class ImageItem implements Serializable{
     public final int drawableId;
     public final String imagePath;
 

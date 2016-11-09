@@ -11,7 +11,7 @@
 
     <string name="drawer_menu">Menu</string>
     <string name="drawer_menu_account">Meus dados</string>
-    <string name="drawer_menu_pictures">Fotos</string>
+    <string name="drawer_menu_pictures">Galeria</string>
     <string name="drawer_menu_logout">Sair</string>
 
     <string name="facebook_app_id">1658435617819436</string>

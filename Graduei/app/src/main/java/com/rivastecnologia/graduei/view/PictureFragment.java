@@ -1,5 +1,6 @@
 package com.rivastecnologia.graduei.view;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -60,12 +61,15 @@ public class PictureFragment extends Fragment {
     DisplayImageOptions mDisplayImageOptions;
     ImageLoadingListener mImageLoadingListenerImpl;
     private List<ImageItem> items = new ArrayList<>();
+    ArrayList<ImageItem> randomItems = new ArrayList<>();
     String pic;
     private static final String PREF_NAME = "LoginActivityPreferences";
 
     public static PictureFragment newInstance() {
         return new PictureFragment();
     }
+
+    GetDataInterface sGetDataInterface;
 
     public PictureFragment() {
         // Required empty public constructor
@@ -125,15 +129,26 @@ public class PictureFragment extends Fragment {
         gridView = (GridView) view.findViewById(R.id.gridview);
         registerForContextMenu(gridView);
         gridView.setAdapter(adapter);
-        getItemList();
-        adapter.notifyDataSetChanged();
-        gridView.invalidateViews();
         return view;
+    }
+
+    public interface GetDataInterface {
+        ArrayList<ImageItem> getDataList();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if(sGetDataInterface != null){
+            randomItems = sGetDataInterface.getDataList();
+            if(randomItems!=null)
+                Log.d("teste", "onResume: "+randomItems.get(1).imagePath);
+            else
+                Log.d("teste", "onResume: null");
+        }
+        getItemList();
+        adapter.notifyDataSetChanged();
+        gridView.invalidateViews();
     }
 
     @Override
@@ -142,8 +157,13 @@ public class PictureFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            sGetDataInterface= (GetDataInterface) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + "must implement GetDataInterface Interface");
+        }
     }
 
     @Override
@@ -387,8 +407,12 @@ public class PictureFragment extends Fragment {
     }
 
     public void getItemList() {
-        allScan();
-        items = insertData();
+        if(randomItems==null) {
+            allScan();
+            items = insertData();
+        }else{
+            items = randomItems;
+        }
         adapter.notifyDataSetChanged();
         gridView.invalidateViews();
     }

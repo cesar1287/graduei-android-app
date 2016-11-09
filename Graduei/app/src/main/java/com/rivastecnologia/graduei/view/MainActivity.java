@@ -6,9 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -48,13 +52,19 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.rivastecnologia.graduei.R;
 import com.rivastecnologia.graduei.controller.domain.User;
+import com.rivastecnologia.graduei.controller.util.GenerateRandomImageItems;
+import com.rivastecnologia.graduei.controller.util.ImageItem;
 import com.rivastecnologia.graduei.model.GradueiDAO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener{
@@ -73,7 +83,12 @@ public class MainActivity extends AppCompatActivity
 
     private static final int MY_PERMISSIONS_REQUEST = 1234;
 
+    private List<ImageItem> items = new ArrayList<>();
+    private List<ImageItem> randomItems = new ArrayList<>();
+
     User user = new User();
+
+    GenerateRandomImageItems generateRandomImageItems = new GenerateRandomImageItems();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +196,60 @@ public class MainActivity extends AppCompatActivity
         nav_nome.setText(nome);
         TextView nav_email = (TextView)hView.findViewById(R.id.header_email);
         nav_email.setText(email);
+
+        getItemList();
+
+        randomItems = generateRandomImageItems.generateRandomItems(items.size(), items);
+    }
+
+    public void getItemList() {
+        allScan();
+        items = insertData();
+    }
+
+    private List<ImageItem> insertData() {
+        List<ImageItem> items = new ArrayList<>();
+        try {
+            final String[] columns = {MediaStore.Images.Media.DATA,
+                    MediaStore.Images.Media._ID};
+            final String orderBy = MediaStore.Images.Media._ID;
+
+            Cursor imagecursor = this.getContentResolver().query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns,
+                    null, null, orderBy);
+
+            if (imagecursor != null && imagecursor.getCount() > 0) {
+
+                while (imagecursor.moveToNext()) {
+                    int dataColumnIndex = imagecursor
+                            .getColumnIndex(MediaStore.Images.Media.DATA);
+                    items.add(new ImageItem(R.drawable.logo, imagecursor.getString(dataColumnIndex)));
+                }
+                //Log.i("teste","items : "+items.size());
+            }
+
+            imagecursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Collections.reverse(items);
+        return items;
+    }
+
+    public void allScan() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Intent mediaScanIntent = new Intent(
+                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri contentUri = Uri.fromFile(Environment.getExternalStorageDirectory()); // out is your output file
+            mediaScanIntent.setData(contentUri);
+            this.sendBroadcast(mediaScanIntent);
+
+        } else {
+            this.sendBroadcast(new Intent(
+                    Intent.ACTION_MEDIA_MOUNTED,
+                    Uri.parse("file://"
+                            + Environment.getExternalStorageDirectory())));
+        }
     }
 
     @Override
@@ -279,6 +348,10 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
             builder.show();
+        }else if(id == R.id.nav_pictures_found){
+            Intent intent = new Intent(this, PictureActivity.class);
+            intent.putExtra("randomList", (Serializable) randomItems);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
