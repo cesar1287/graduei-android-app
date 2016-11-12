@@ -28,4 +28,10 @@
     <string name="frontal">FRONTAL</string>
     <string name="perfil_esquerdo">PERFIL ESQUERDO</string>
     <string name="drawer_menu_pictures_found">Fotos Encontradas</string>
+    <string name="drawer_camera">Câmera</string>
+    <string name="drawer_menu_careta">Careta</string>
+    <string name="drawer_menu_frontal">Frontal</string>
+    <string name="drawer_menu_direito">Perfil Direito</string>
+    <string name="drawer_menu_esquerdo">Perfil Esquerdo</string>
+    <string name="drawer_logout">Logout</string>
 </resources>

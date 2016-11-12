@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="@string/drawer_menu">
         <menu>
@@ -15,6 +16,32 @@
                 android:id="@+id/nav_pictures_found"
                 android:icon="@drawable/ic_folder_multiple_image_white_18dp"
                 android:title="@string/drawer_menu_pictures_found" />
+        </menu>
+    </item>
+
+    <item android:title="@string/drawer_camera">
+        <menu>
+            <item
+                android:id="@+id/nav_careta"
+                android:icon="@drawable/ic_camera_enhance_white_18dp"
+                android:title="@string/drawer_menu_careta"/>
+            <item
+                android:id="@+id/nav_frontal"
+                android:icon="@drawable/ic_camera_enhance_white_18dp"
+                android:title="@string/drawer_menu_frontal" />
+            <item
+                android:id="@+id/nav_direita"
+                android:icon="@drawable/ic_camera_enhance_white_18dp"
+                android:title="@string/drawer_menu_direito" />
+            <item
+                android:id="@+id/nav_esquerda"
+                android:icon="@drawable/ic_camera_enhance_white_18dp"
+                android:title="@string/drawer_menu_esquerdo" />
+        </menu>
+    </item>
+
+    <item android:title="@string/drawer_logout">
+        <menu>
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_logout_white_18dp"
