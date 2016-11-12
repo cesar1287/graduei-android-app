@@ -38,6 +38,7 @@ import com.rivastecnologia.graduei.R;
 import com.rivastecnologia.graduei.controller.util.BitmapTransform;
 import com.rivastecnologia.graduei.controller.util.ImageItem;
 import com.rivastecnologia.graduei.controller.util.SquareImageView;
+import com.rivastecnologia.graduei.model.GradueiDAO;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
@@ -142,7 +143,7 @@ public class PictureFragment extends Fragment {
         if(sGetDataInterface != null){
             randomItems = sGetDataInterface.getDataList();
             if(randomItems!=null)
-                Log.d("teste", "onResume: "+randomItems.get(1).imagePath);
+                Log.d("teste", "onResume: "+randomItems.get(0).imagePath);
             else
                 Log.d("teste", "onResume: null");
         }
@@ -170,8 +171,10 @@ public class PictureFragment extends Fragment {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        SharedPreferences sp = getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        final SharedPreferences sp = getActivity().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         final SharedPreferences.Editor editor = sp.edit();
+
+        final GradueiDAO dao = new GradueiDAO(getActivity());
 
         final MenuItem careta = menu.add("Marcar como \"CARETA\"");
         careta.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -179,6 +182,11 @@ public class PictureFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 editor.putString("careta", pic);
                 editor.apply();
+
+                String id = sp.getString("id","0");
+                dao.insertPicture(id, pic);
+                dao.close();
+
                 Toast.makeText(getActivity(), "Foto marcada com sucesso", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -190,6 +198,11 @@ public class PictureFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 editor.putString("direito", pic);
                 editor.apply();
+
+                String id = sp.getString("id","0");
+                dao.insertPicture(id, pic);
+                dao.close();
+
                 Toast.makeText(getActivity(), "Foto marcada com sucesso", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -201,6 +214,11 @@ public class PictureFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 editor.putString("frontal", pic);
                 editor.apply();
+
+                String id = sp.getString("id","0");
+                dao.insertPicture(id, pic);
+                dao.close();
+
                 Toast.makeText(getActivity(), "Foto marcada com sucesso", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -212,6 +230,11 @@ public class PictureFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 editor.putString("esquerdo", pic);
                 editor.apply();
+
+                String id = sp.getString("id","0");
+                dao.insertPicture(id, pic);
+                dao.close();
+
                 Toast.makeText(getActivity(), "Foto marcada com sucesso", Toast.LENGTH_LONG).show();
                 return false;
             }

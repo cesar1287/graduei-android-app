@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity
             builder.show();
         }
 
+        id = sp.getString("id", "0");
         nome = sp.getString("nome","falhou");
         email = sp.getString("email","falhou");
         profilePic = sp.getString("profile_pic","falhou");
@@ -196,10 +197,50 @@ public class MainActivity extends AppCompatActivity
         nav_nome.setText(nome);
         TextView nav_email = (TextView)hView.findViewById(R.id.header_email);
         nav_email.setText(email);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+
+
+        frontal = sp.getString("frontal","falhou");
+        perfil_direito = sp.getString("direito","falhou");
+        careta = sp.getString("careta","falhou");
+        perfil_esquerdo = sp.getString("esquerdo","falhou");
+
+        ImageView iv_frontal = (ImageView) findViewById(R.id.frontal);
+        Glide.with(iv_frontal.getContext())
+                .load(frontal)
+                .placeholder(R.drawable.logo)
+                .into(iv_frontal);
+
+        ImageView iv_direito = (ImageView) findViewById(R.id.perfil_direito);
+        Glide.with(this)
+                .load(perfil_direito)
+                .placeholder(R.drawable.logo)
+                .into(iv_direito);
+
+        ImageView iv_careta = (ImageView) findViewById(R.id.careta);
+        Glide.with(this)
+                .load(careta)
+                .placeholder(R.drawable.logo)
+                .into(iv_careta);
+
+        ImageView iv_esquerdo = (ImageView) findViewById(R.id.perfil_esquerdo);
+        Glide.with(this)
+                .load(perfil_esquerdo)
+                .placeholder(R.drawable.logo)
+                .into(iv_esquerdo);
 
         getItemList();
 
-        randomItems = generateRandomImageItems.generateRandomItems(items.size(), items);
+        GradueiDAO dao = new GradueiDAO(this);
+        randomItems = dao.getUserPicture(id);
+
+        //randomItems = generateRandomImageItems.generateRandomItems(items.size(), items);
     }
 
     public void getItemList() {
@@ -250,42 +291,6 @@ public class MainActivity extends AppCompatActivity
                     Uri.parse("file://"
                             + Environment.getExternalStorageDirectory())));
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-
-        frontal = sp.getString("frontal","falhou");
-        perfil_direito = sp.getString("direito","falhou");
-        careta = sp.getString("careta","falhou");
-        perfil_esquerdo = sp.getString("esquerdo","falhou");
-
-        ImageView iv_frontal = (ImageView) findViewById(R.id.frontal);
-        Glide.with(iv_frontal.getContext())
-                .load(frontal)
-                .placeholder(R.drawable.logo)
-                .into(iv_frontal);
-
-        ImageView iv_direito = (ImageView) findViewById(R.id.perfil_direito);
-        Glide.with(this)
-                .load(perfil_direito)
-                .placeholder(R.drawable.logo)
-                .into(iv_direito);
-
-        ImageView iv_careta = (ImageView) findViewById(R.id.careta);
-        Glide.with(this)
-                .load(careta)
-                .placeholder(R.drawable.logo)
-                .into(iv_careta);
-
-        ImageView iv_esquerdo = (ImageView) findViewById(R.id.perfil_esquerdo);
-        Glide.with(this)
-                .load(perfil_esquerdo)
-                .placeholder(R.drawable.logo)
-                .into(iv_esquerdo);
     }
 
     @Override

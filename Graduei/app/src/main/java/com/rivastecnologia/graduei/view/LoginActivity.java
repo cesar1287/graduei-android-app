@@ -172,6 +172,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
 
+        editor.putString("id", infosGoogle.getString("id"));
         editor.putString("nome", infosGoogle.getString("name"));
         editor.putString("email", infosGoogle.getString("email"));
         editor.putString("profile_pic", infosGoogle.getString("profile_pic"));
@@ -194,6 +195,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
 
+                editor.putString("id", infosFacebook.getString("id"));
                 editor.putString("nome", infosFacebook.getString("name"));
                 editor.putString("email", infosFacebook.getString("email"));
                 editor.putString("profile_pic", infosFacebook.getString("profile_pic"));
