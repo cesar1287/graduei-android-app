@@ -30,11 +30,11 @@
                 android:icon="@drawable/ic_camera_enhance_white_18dp"
                 android:title="@string/drawer_menu_frontal" />
             <item
-                android:id="@+id/nav_direita"
+                android:id="@+id/nav_direito"
                 android:icon="@drawable/ic_camera_enhance_white_18dp"
                 android:title="@string/drawer_menu_direito" />
             <item
-                android:id="@+id/nav_esquerda"
+                android:id="@+id/nav_esquerdo"
                 android:icon="@drawable/ic_camera_enhance_white_18dp"
                 android:title="@string/drawer_menu_esquerdo" />
         </menu>
