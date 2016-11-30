@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity
             case MY_PERMISSIONS_REQUEST: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
@@ -372,8 +372,11 @@ public class MainActivity extends AppCompatActivity
             int permissionCheckWrite = ContextCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+            int permissionCheckCamera = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA);
+
             // Here, thisActivity is the current activity
-            if (permissionCheckWrite!= PackageManager.PERMISSION_GRANTED) {
+            if (permissionCheckWrite!= PackageManager.PERMISSION_GRANTED || permissionCheckCamera!=PackageManager.PERMISSION_GRANTED) {
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -388,7 +391,7 @@ public class MainActivity extends AppCompatActivity
                     // No explanation needed, we can request the permission.
 
                     ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
                             MY_PERMISSIONS_REQUEST);
 
                     // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
